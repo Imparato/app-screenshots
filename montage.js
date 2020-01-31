@@ -4,9 +4,9 @@ const spawnAsync = require("@expo/spawn-async");
 
 const backgroundColor = "#fafafa";
 const fontPath = "/System/Library/Fonts/Avenir Next.ttc";
-const fontWeight = "500"; // ignored for some fonts
-const fontSize = 60;
-const fontColor = "rgba(0, 0, 0, 0.77)";
+const fontWeight = "300"; // ignored for some fonts
+const fontSize = 64;
+const fontColor = "rgba(0, 0, 0, 0.75)";
 
 const { DEBUG } = process.env;
 
@@ -53,7 +53,9 @@ const processScreenshot = async (
   const tmpScreenshot = `${tmp}/screenshot.png`;
   const tmpScreenshotComposite = `${tmp}/screenshot-composite.png`;
 
-  const label = path.basename(src, ".png").match(/^\d+[ -]*(.+)$/)[1];
+  const [_, rotate, label] = path
+    .basename(src, ".png")
+    .match(/^\d+\s*(rotLeft|rotRight)?[ -]*(.+)$/);
 
   // background
   await convert([
@@ -96,27 +98,48 @@ const processScreenshot = async (
 
   // phone with screenshot
   // compose dst-over with inversion of background & front because final size is the src size
-  await composite([
-    "-compose",
-    "dst-over",
-    "-background",
-    "transparent",
-    "-gravity",
-    "center",
-    tmpScreenshot,
-    tmpPhone,
-    tmpScreenshotComposite
-  ]);
+  await composite(
+    [
+      !!rotate && "-rotate",
+      !!rotate && "-30",
+      "-compose",
+      "dst-over",
+      "-background",
+      "transparent",
+      "-gravity",
+      "center",
+      tmpScreenshot,
+      tmpPhone,
+      tmpScreenshotComposite
+    ].filter(arg => arg)
+  );
 
-  composite([
-    "-gravity",
-    "center",
-    tmpScreenshotComposite,
-    "-geometry",
-    `+0+${screenshot.marginTop}`,
-    tmpBackground,
-    dest
-  ]);
+  if (rotate) {
+    const geometryLeft =
+      rotate == "rotLeft"
+        ? `+${screenshot.rotation.marginLeft}`
+        : screenshot.rotation.marginLeft - width;
+
+    composite([
+      "-gravity",
+      "West",
+      tmpScreenshotComposite,
+      "-geometry",
+      `${geometryLeft}+${screenshot.rotation.marginTop}`,
+      tmpBackground,
+      dest
+    ]);
+  } else {
+    composite([
+      "-gravity",
+      "center",
+      tmpScreenshotComposite,
+      "-geometry",
+      `+0+${screenshot.marginTop}`,
+      tmpBackground,
+      dest
+    ]);
+  }
 };
 
 const processProfile = dir => {

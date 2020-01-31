@@ -7,6 +7,10 @@
   "phoneWidth": 1242,
   "screenshot": {
     "width": 1036,
-    "marginTop": 310
+    "marginTop": 310,
+    "rotation": {
+      "marginTop": 340,
+      "marginLeft": 30
+    }
   }
 }
