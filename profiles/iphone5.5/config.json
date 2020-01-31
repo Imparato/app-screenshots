@@ -1,0 +1,16 @@
+{
+  "width": 1242,
+  "height": 2208,
+  "title": {
+    "marginTop": 200
+  },
+  "phoneWidth": 1242,
+  "screenshot": {
+    "width": 984,
+    "marginTop": 550,
+    "rotation": {
+      "marginTop": 560,
+      "marginLeft": 40
+    }
+  }
+}

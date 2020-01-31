@@ -48,7 +48,7 @@ const processScreenshot = async (
   { src, dest, tmp },
   { profileDir, phoneWidth, title, width, height, screenshot }
 ) => {
-  const tmpPhone = `${tmp}/phone.png`;
+  const tmpDevice = `${tmp}/device.png`;
   const tmpBackground = `${tmp}/background.png`;
   const tmpScreenshot = `${tmp}/screenshot.png`;
   const tmpScreenshotComposite = `${tmp}/screenshot-composite.png`;
@@ -80,10 +80,10 @@ const processScreenshot = async (
 
   // phone image
   await convert([
-    profileDir + "/phone.png",
+    profileDir + "/device.png",
     "-resize",
     `${phoneWidth}x`,
-    tmpPhone
+    tmpDevice
   ]);
 
   // screenshot resize
@@ -109,7 +109,7 @@ const processScreenshot = async (
       "-gravity",
       "center",
       tmpScreenshot,
-      tmpPhone,
+      tmpDevice,
       tmpScreenshotComposite
     ].filter(arg => arg)
   );
